@@ -1,0 +1,31 @@
+{
+  "name": "svg-slider",
+  "version": "0.0.1",
+  "description": "A flexible and customizable slider for your web applications.",
+  "keywords": [
+    "svg",
+    "slider"
+  ],
+  "main": "dist/svg-slider.min.js",
+  "module": "src/svg-slider.js",
+  "repository": "https://github.com/francoisgeorgy/svg-slider.git",
+  "bugs": "https://github.com/francoisgeorgy/svg-slider/issues",
+  "author": "François Georgy <francois.georgy@gmail.com> (http://sysex.io)",
+  "license": "MIT",
+  "files": [
+    "README.md",
+    "dist/svg-slider.min.js"
+  ],
+  "scripts": {
+    "dev": "webpack --config webpack.dev.js",
+    "start": "webpack-dev-server --open --config webpack.dev.js",
+    "build": "webpack --config webpack.prod.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "babel-minify-webpack-plugin": "^0.2.0",
+    "webpack": "^3.6.0",
+    "webpack-dev-server": "^2.8.2",
+    "webpack-merge": "^4.1.0"
+  }
+}
