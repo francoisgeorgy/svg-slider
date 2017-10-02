@@ -1,11 +1,11 @@
 const path = require('path');
 
 module.exports = {
-    entry: './src/svg-knob.js',
+    entry: './src/svg-slider.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'svg-knob.min.js',
-        library: 'svg-knob',
+        filename: 'svg-slider.min.js',
+        library: 'svg-slider',
         libraryTarget: 'umd'
     }
 };
