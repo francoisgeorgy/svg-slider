@@ -15,7 +15,7 @@ export default function(elem, conf = {}) {
         throw 'You must pass a DOM node reference to the slider constructor';
     }
 
-    let trace = true;    // when true, will log more details in the console; use enableDebug(), disableDebug() to change
+    let trace = false;    // when true, will log more details in the console; use enableDebug(), disableDebug() to change
 
     const NS = "http://www.w3.org/2000/svg";
 
