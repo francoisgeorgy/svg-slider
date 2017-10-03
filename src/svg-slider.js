@@ -57,7 +57,7 @@ export default function(elem, conf = {}) {
 
      */
 
-    const VIEWBOX_HEIGHT = 99;
+    const VIEWBOX_HEIGHT = 100;
     // const VIEWBOX_WIDTH = 20;
 
     let svg_element;
@@ -173,7 +173,7 @@ export default function(elem, conf = {}) {
 
     // For the use of null argument with setAttributeNS, see https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course#Scripting_in_namespaced_XML
     svg_element.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
-    svg_element.setAttributeNS(null, "viewBox", `0 0 ${config.width-1} ${VIEWBOX_HEIGHT}`);
+    svg_element.setAttributeNS(null, "viewBox", `0 0 ${config.width} ${VIEWBOX_HEIGHT}`);
 
     //---------------------------------------------------------------------
     // internals
@@ -335,14 +335,13 @@ export default function(elem, conf = {}) {
         let dxPixels = e.clientX - targetRect.left;
         let dyPixels = e.clientY - targetRect.top;
 
-        // mouse delta in cartesian coordinate with path center=0,0 and scaled (-1..0..1) relative to path:
-        // <svg> center:       (dx, dy) == ( 0,  0)
-        // <svg> top-left:     (dx, dy) == (-1,  1)
-        // <svg> bottom-right: (dx, dy) == ( 1, -1) (bottom right of the 100x100 viewBox, ignoring the bottom 100x20 for the label)
-        let dx = (dxPixels - arcCenterXPixels) / (targetRect.width / 2);
-        let dy = - (dyPixels - arcCenterYPixels) / (targetRect.width / 2);  // targetRect.width car on a 20px de plus en hauteur pour le label
+        let dx = dxPixels / targetRect.width * config.width;
+        let dy = getViewboxY(dyPixels / targetRect.height * VIEWBOX_HEIGHT + config.track_offset);
 
+        console.log(`x: ${Math.round(dx)}, y: ${Math.round(dy)}`);
         // if (config.rotation === CCW) dx = - dx;
+
+        position = Math.min(Math.max(dy, 0), config.track_length);
 
         // convert to polar coordinates
         // let position_rad = Math.atan2(dy, dx);
@@ -550,21 +549,6 @@ export default function(elem, conf = {}) {
 
     /**
      *
-     * @returns {*}
-     */
-/*
-    function getTrackPath() {
-
-        let p = null;
-
-        // p = getArc(0, position, config.track_width);
-
-        return p;
-    }
-*/
-
-    /**
-     *
      */
     function draw_background() {
 
@@ -572,15 +556,10 @@ export default function(elem, conf = {}) {
 
         // For the use of null argument with setAttributeNS, see https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course#Scripting_in_namespaced_XML
 
-        console.log("x", '0');
-        console.log("y", '0');
-        console.log("width", `${config.width-1}`);
-        console.log("height", `${VIEWBOX_HEIGHT}`);
-
         svg_bg = document.createElementNS(NS, "rect");
         svg_bg.setAttributeNS(null, "x", '0');
         svg_bg.setAttributeNS(null, "y", '0');
-        svg_bg.setAttributeNS(null, "width", `${config.width-1}`);
+        svg_bg.setAttributeNS(null, "width", `${config.width}`);
         svg_bg.setAttributeNS(null, "height", `${VIEWBOX_HEIGHT}`);
         svg_bg.setAttributeNS(null, "rx", '0');     // Determines the horizontal corner radius of the rect.
         svg_bg.setAttributeNS(null, "ry", '1');     // Determines the vertical corner radius of the rect.
@@ -602,14 +581,14 @@ export default function(elem, conf = {}) {
         // let x0 = (config.width - config.markers_length) / 2;
         // let x1 = x0 + config.markers_length;
         let x0 = 0;
-        let x1 = config.width - 1;
+        let x1 = config.width;
 
         let p = '';
         let k = config.markers;
         // let step = config.track_length / config.markers;
         for (let i = 0; i <= k; i++) {
             let y = getViewboxY(config.track_offset + (config.track_length / k * i));
-            console.log(y, x0, x1);
+            console.log(y);
             p += `M ${x0},${y} L ${x1},${y} `;
         }
 
@@ -622,25 +601,6 @@ export default function(elem, conf = {}) {
         svg_element.appendChild(svg_divisions);
 
     }
-
-    /*
-            function draw_units() {
-                let pos = getViewboxCoord(position_min_polar, config.divisions_width);    // getViewboxCoord(position, radius)
-                svg_value_text = document.createElementNS(NS, "text");
-                svg_value_text.setAttributeNS(null, "x", `${pos.x}`);
-                svg_value_text.setAttributeNS(null, "y", `${pos.y}`);
-                // svg_value_text.setAttribute("text-anchor", "middle");
-                svg_value_text.setAttribute("cursor", "default");
-                svg_value_text.setAttribute("font-family", config.font_family);
-                svg_value_text.setAttribute("font-size", `10`);
-                // svg_value_text.setAttribute("font-weight", `${config.font_weight}`);
-                svg_value_text.setAttribute("fill", config.font_color);
-                // svg_value_text.setAttribute("class", config.class_value);
-                // svg_value_text.textContent = getDisplayValue();
-                svg_value_text.textContent = config.value_min.toString();
-                svg_element.appendChild(svg_value_text);
-            }
-    */
 
     /**
      *
@@ -660,8 +620,8 @@ export default function(elem, conf = {}) {
         svg_track_bg.setAttributeNS(null, "height", `${config.track_bg_length + (2 * config.track_bg_radius)}`);
         svg_track_bg.setAttributeNS(null, "rx", '5');     // Determines the horizontal corner radius of the rect.
         svg_track_bg.setAttributeNS(null, "ry", '5');     // Determines the vertical corner radius of the rect.
-        // svg_track_bg.setAttribute("stroke", `${config.track_bg_color}`);
-        svg_track_bg.setAttribute("stroke-width", '0');
+        svg_track_bg.setAttribute("stroke", `${config.track_color}`);
+        svg_track_bg.setAttribute("stroke-width", '0.5');
         svg_track_bg.setAttribute("fill", `${config.track_bg_color}`);
         // svg_track_bg.setAttribute("stroke-linecap", config.linecap);
         svg_track_bg.setAttribute("class", config.class_track_bg);
@@ -673,37 +633,39 @@ export default function(elem, conf = {}) {
 
     /**
      *
+     * @returns {*}
+     */
+    // function getTrackPath() {
+    //
+    //     let p = null;
+    //
+    //     // p = getArc(0, position, config.track_width);
+    //
+    //     return p;
+    // }
+
+    /**
+     *
      */
     function draw_track() {
         if (!config.track) return;
 
-        svg_track = document.createElementNS(NS, "rect");
-        svg_track.setAttributeNS(null, "x", `${(config.width - config.track_width) / 2}`);
+        if (!svg_track) {
+            svg_track = document.createElementNS(NS, "rect");
+            svg_track.setAttributeNS(null, "x", `${(config.width - config.track_width) / 2}`);
+            svg_track.setAttributeNS(null, "width", `${config.track_width}`);
+            svg_track.setAttributeNS(null, "rx", '5');     // Determines the horizontal corner radius of the rect.
+            svg_track.setAttributeNS(null, "ry", '5');     // Determines the vertical corner radius of the rect.
+            // svg_track.setAttribute("stroke", `${config.track_color_init}`);
+            svg_track.setAttribute("stroke-width", '0');
+            svg_track.setAttribute("fill", `${config.track_color}`);
+            // svg_track.setAttribute("stroke-linecap", config.linecap);
+            svg_track.setAttribute("class", config.class_track);
+            svg_element.appendChild(svg_track);
+        }
         svg_track.setAttributeNS(null, "y", `${getViewboxY(config.track_offset + position + config.track_radius)}`);
-        svg_track.setAttributeNS(null, "width", `${config.track_width}`);
         svg_track.setAttributeNS(null, "height", `${position + (2 *  + config.track_radius)}`);
-        svg_track.setAttributeNS(null, "rx", '5');     // Determines the horizontal corner radius of the rect.
-        svg_track.setAttributeNS(null, "ry", '5');     // Determines the vertical corner radius of the rect.
-        // svg_track.setAttribute("stroke", `${config.track_color_init}`);
-        svg_track.setAttribute("stroke-width", '0');
-        svg_track.setAttribute("fill", `${config.track_color}`);
-        // svg_track.setAttribute("stroke-linecap", config.linecap);
-        svg_track.setAttribute("class", config.class_track);
-        svg_element.appendChild(svg_track);
     }
-
-    /**
-     *
-     * @returns {string}
-     */
-/*
-    function getTrackCursor() {
-        // let a = sliderToPolarPosition(position);
-        let from = getViewboxCoord(a, config.cursor_width);
-        let to = getViewboxCoord(a, config.cursor_width + config.cursor_length);
-        return `M ${from.x},${from.y} L ${to.x},${to.y}`;
-    }
-*/
 
     /**
      *
@@ -712,19 +674,21 @@ export default function(elem, conf = {}) {
 
         if (!config.cursor) return;
 
-        svg_cursor = document.createElementNS(NS, "rect");
-        svg_cursor.setAttributeNS(null, "x", `${(config.width - config.cursor_width) / 2}`);
+        if (!svg_cursor) {
+            svg_cursor = document.createElementNS(NS, "rect");
+            svg_cursor.setAttributeNS(null, "x", `${(config.width - config.cursor_width) / 2}`);
+            svg_cursor.setAttributeNS(null, "width", `${config.cursor_width}`);
+            svg_cursor.setAttributeNS(null, "height", `${config.cursor_height}`);
+            svg_cursor.setAttributeNS(null, "rx", `${config.cursor_radius}`);     // Determines the horizontal corner radius of the rect.
+            svg_cursor.setAttributeNS(null, "ry", `${config.cursor_radius}`);     // Determines the vertical corner radius of the rect.
+            // svg_cursor.setAttribute("stroke", `${config.track_bg_color}`);
+            svg_cursor.setAttribute("stroke-width", '0');
+            svg_cursor.setAttribute("fill", `${config.cursor_color}`);
+            // svg_cursor.setAttribute("stroke-linecap", config.linecap);
+            svg_cursor.setAttribute("class", config.class_cursor);
+            svg_element.appendChild(svg_cursor);
+        }
         svg_cursor.setAttributeNS(null, "y", `${getViewboxY(config.track_offset + config.cursor_height / 2 + position)}`);
-        svg_cursor.setAttributeNS(null, "width", `${config.cursor_width - 1}`);
-        svg_cursor.setAttributeNS(null, "height", `${config.cursor_height}`);
-        svg_cursor.setAttributeNS(null, "rx", `${config.cursor_radius}`);     // Determines the horizontal corner radius of the rect.
-        svg_cursor.setAttributeNS(null, "ry", `${config.cursor_radius}`);     // Determines the vertical corner radius of the rect.
-        // svg_cursor.setAttribute("stroke", `${config.track_bg_color}`);
-        svg_cursor.setAttribute("stroke-width", '0');
-        svg_cursor.setAttribute("fill", `${config.cursor_color}`);
-        // svg_cursor.setAttribute("stroke-linecap", config.linecap);
-        svg_cursor.setAttribute("class", config.class_cursor);
-        svg_element.appendChild(svg_cursor);
     }
 
     /**
@@ -755,11 +719,11 @@ export default function(elem, conf = {}) {
      */
     function draw() {
         draw_background();
-        draw_track_background();
         draw_markers();
-        draw_cursor();
+        draw_track_background();
         // draw_units();
         draw_track();
+        draw_cursor();
         draw_value();
     }
 
@@ -767,7 +731,9 @@ export default function(elem, conf = {}) {
      *
      */
     function redraw() {
-
+        draw_track();
+        draw_cursor();
+/*
         let p = getTrackPath();
         if (p) {
             if (svg_track) {
@@ -803,6 +769,7 @@ export default function(elem, conf = {}) {
         if (svg_value_text) {
             svg_value_text.textContent = getDisplayValue();
         }
+*/
     }
 
     /**
