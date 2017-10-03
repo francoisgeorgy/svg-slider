@@ -74,34 +74,34 @@ export default function(elem, conf = {}) {
         // User configurable properties. The colors are defined in the 'palettes', later on.
         // No camelCase because we want to be able to have the same name in data- attributes.
 
-        width: 20,                  // on a 1..100 scale; height is always 100
+        width: 20,
 
         // background:
         bg_width: 20,
         bg_border_width: 1,
 
         // markers:
-        markers: 4,                         // number of markers; 0 or false to disable
+        markers: 4,                  // number of markers; 0 or false to disable
         markers_length: 18,
-        markers_width: 0.5,
+        markers_width: 1,
 
         // track background:
-        track_bg_offset: 10,
-        track_bg_length: 80,
-        track_bg_width: 10,
-        track_bg_radius: 5,
-        track_bg_border_width: 0,
+        track_bg_offset: 5,
+        track_bg_length: 90,
+        track_bg_width: 8,
+        track_bg_radius: 3,
+        track_bg_border_width: 2,
 
         // track:
-        track_offset: 10,
-        track_length: 80,
-        track_width: 10,
-        track_radius: 5,
+        track_offset: 5,
+        track_length: 90,
+        track_width: 6,
+        track_radius: 3,
 
         // cursor
-        cursor_width: 16,
+        cursor_width: 14,
         cursor_height: 6,
-        cursor_border_width: 10,
+        cursor_border_width: 0,
         cursor_radius: 2,
 
         // value range

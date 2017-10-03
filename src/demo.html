@@ -56,11 +56,7 @@
             <div>Default slider</div>
         </div>
         <div>
-            <svg class="slider" id="slider-2"></svg>
-            <div></div>
-        </div>
-        <div>
-            <svg class="slider" id="slider-3"></svg>
+            <svg class="slider" id="slider-simple"></svg>
             <div></div>
         </div>
     </div>
@@ -81,41 +77,18 @@
 
         sliders[1] = new Slider(document.getElementById('slider-default'));
 
-        sliders[1].enableDebug();
-
-        sliders[2] = new Slider(document.getElementById('slider-2'), {
-            track_bg_offset: 5,
-            track_bg_length: 90,
-            track_bg_width: 6,
-            track_bg_radius: 3,
-            track_offset: 5,
-            track_length: 90,
-            track_width: 6,
-            track_radius: 3,
-            cursor_width: 16,
-            cursor_height: 6,
-            cursor_border_width: 10,
-            cursor_radius: 2,
-            initial_value: 42
-        });
-
-        sliders[3] = new Slider(document.getElementById('slider-3'), {
+        sliders[3] = new Slider(document.getElementById('slider-simple'), {
             markers: false,
+            cursor: false,
             track_bg_offset: 5,
             track_bg_length: 90,
             track_bg_width: 20,
-            track_bg_radius: 2,
+            track_bg_radius: 0,
+            track_bg_border_width: 0,
             track_offset: 5,
             track_length: 90,
             track_width: 20,
-            track_radius: 2,
-//            cursor: false,
-            cursor_width: 20,
-            cursor_height: 6,
-            cursor_border_width: 10,
-            cursor_radius: 2,
-            cursor_color: '#777',
-            initial_value: 42
+            track_radius: 0
         });
 
         sliders[4] = new Slider(document.getElementById('slider-dark1'), {
@@ -133,8 +106,7 @@
             cursor_width: 14,
             cursor_height: 6,
             cursor_border_width: 0,
-            cursor_radius: 2,
-            initial_value: 42
+            cursor_radius: 2
         });
 
 
