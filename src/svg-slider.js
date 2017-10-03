@@ -53,6 +53,15 @@ export default function(elem, conf = {}) {
     // const VIEWBOX_WIDTH = 20;
 
     let svg_element;
+
+    /*
+    if (typeof elem === "string") {
+        element = document.querySelector(elem);
+    } else if (elem instanceof HTMLElement) {
+        element = elem;
+    }
+    */
+
     if (elem.nodeName.toLowerCase() === 'svg') {
         svg_element = elem;
     } else {
