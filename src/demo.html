@@ -33,7 +33,7 @@
         }
         .slider {
             align-self: start;
-            width: 100px;
+            height: 80vh;
             border: none;
         }
     </style>
@@ -56,7 +56,7 @@
 
     document.addEventListener("DOMContentLoaded", function() {
 
-        new Slider(document.getElementById('slider-default'));
+        new Slider(document.getElementById('slider-default'), {initial_value: 60});
 
     });
 
