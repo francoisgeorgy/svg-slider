@@ -17,24 +17,19 @@ export default function(elem, conf = {}) {
 
     let trace = false;    // when true, will log more details in the console; use enableDebug(), disableDebug() to change
 
-    // It is faster to access a property than to access a variable...
-    // See https://jsperf.com/vars-vs-props-speed-comparison/1
-
     const NS = "http://www.w3.org/2000/svg";
 
     //---------------------------------------------------------------------
-    // To simplify the internal coordinates transformations, we set the view box as a 100 by 100 square.
-
     /*
           +--------------+ VIEWBOX_HEIGHT=99
           |              |
-          |   +------+   |      ^
+          |   /------\   |      ^
           |   |      |   |      |
           |   |      |   |      | track_length: 0..(99 - track_offset) [viewbox units]
           |   |      |   |      |
-          | +-+------+-+ |      |       ^
+          | /----------\ |      |       ^
           | |  cursor  | |      |       | cursor_height: 0..(99 - track_offset) [viewbox units]
-          | +-+------+-+ |      |   ^   v
+          | \----------/ |      |   ^   v
           |   |      |   |      |   |
           |   |  T   |   |      |   |
           |   |  R   |   |      |   |
@@ -42,7 +37,7 @@ export default function(elem, conf = {}) {
           |   |  C   |   |      |   |
           |   |  K   |   |      |   |
           |   |      |   |      |   |
-          |   +------+   |  ^   v   -
+          |   \------/   |  ^   v   -
           |              |  | track_offset: 0..99 [viewbox units]
           +--------------+  v
 
@@ -50,11 +45,8 @@ export default function(elem, conf = {}) {
                     - track_bg_length = track_length
                     - track_bg_width  = track_width
 
+        position = 0..track_length
         value = value_min..value_max
-        position = 0..99
-
-
-
      */
 
     const VIEWBOX_HEIGHT = 100;
@@ -71,7 +63,6 @@ export default function(elem, conf = {}) {
     let defaults = {
 
         // User configurable properties. The colors are defined in the 'palettes', later on.
-
         // No camelCase because we want to be able to have the same name in data- attributes.
 
         width: 20,                  // on a 1..100 scale; height is always 100
@@ -79,6 +70,11 @@ export default function(elem, conf = {}) {
         // background:
         bg_width: 20,
         bg_border_width: 1,
+
+        // markers:
+        markers: 4,                         // number of markers; 0 or false to disable
+        markers_length: 18,
+        markers_width: 0.5,
 
         // track background:
         track_bg_offset: 10,
@@ -107,15 +103,9 @@ export default function(elem, conf = {}) {
         value_max: 100.0,
         value_resolution: 1,        // null means ignore
 
-        // center_zero: false,
-        // center_value: null,         // if null, the value will be computed from the min and max in the init() method
-
-        // position_min: 10,
-        // position_max: 90,
-
         // appearance:
         palette: 'lightgray',
-        bg: true,
+        bg: false,
         track_bg: true,
         track: true,
         cursor: true,
@@ -129,10 +119,6 @@ export default function(elem, conf = {}) {
         font_family: 'sans-serif',
         font_size: 25,
         font_weight: 'bold',
-        
-        markers: 10,                         // number of markers; 0 or false to disable
-        markers_length: 8,
-        markers_width: 1,
 
         class_bg: 'slider-bg',
         class_track_bg : 'slider-track-bg',
@@ -154,22 +140,11 @@ export default function(elem, conf = {}) {
 
     let data_config = JSON.parse(elem.dataset.config || '{}');
     let c = Object.assign({}, defaults, palettes[defaults.palette], conf, data_config);
-    // let config = Object.assign({}, defaults, conf, data_config);
     // we re-assign conf and data_config for the case they override some of the palette colors.
     let config = Object.assign(c, palettes[c.palette], conf, data_config);
 
     //---------------------------------------------------------------------
-    // Terminates the SVG element setup:
-
-    // let viewbox_height = 100;
-/*
-    if (config.label || (config.value_position >= (100 - (config.font_size / 2)))) {
-        // make some room for the label or the value that we want to display below the slider
-        viewbox_height = 120;
-    } else {
-        viewbox_height = 100;
-    }
-*/
+    // SVG element setup:
 
     // For the use of null argument with setAttributeNS, see https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course#Scripting_in_namespaced_XML
     svg_element.setAttributeNS("http://www.w3.org/2000/xmlns/", "xmlns:xlink", "http://www.w3.org/1999/xlink");
@@ -184,11 +159,11 @@ export default function(elem, conf = {}) {
 
     //---------------------------------------------------------------------
     // SVG elements, from back to front:
-    let svg_bg = null;           // background disk:
-    let svg_track_bg = null;            // track background; for non zero-centered sliders
+    let svg_bg = null;           // background
+    let svg_track_bg = null;     // track background
     let svg_track = null;
     let svg_cursor = null;
-    let svg_divisions = null;
+    let svg_markers = null;
     let svg_value_text = null;
 
     //---------------------------------------------------------------------
@@ -213,12 +188,6 @@ export default function(elem, conf = {}) {
      */
     function init() {
 
-        if (config.center_zero) {
-            if (!config.center_value) {
-                config.center_value = getRoundedValue((config.value_max - config.value_min) / 2 + config.value_min);
-            }
-        }
-
         // set initial value and position:
         setValue(config.initial_value ? config.initial_value : config.default_value);
 
@@ -235,7 +204,7 @@ export default function(elem, conf = {}) {
 
     /**
      *
-     * @param position [deg] in slider's coordinates
+     * @param a slider's position [0..track_length]
      * @returns {*}
      */
     function getDisplayValue(position) {
@@ -245,7 +214,7 @@ export default function(elem, conf = {}) {
 
     /**
      * Get the slider's value determined by the slider's position (position)
-     * @param a [deg] in slider's coordinates
+     * @param a slider's position [0..track_length]
      * @returns {number}
      */
     function getValue(a) {
@@ -294,31 +263,6 @@ export default function(elem, conf = {}) {
     }
 
     /**
-     * Return polar coordinates position from our "slider coordinates" position
-     */
-/*
-    function sliderToPolarPosition(position) {
-        let a = config.zero_at - position;
-        if (a < 0) a = a + 360.0;
-        if (trace) console.log(`sliderToPolarPosition ${position} -> ${a}`);
-        return a;
-    }
-*/
-
-    /**
-     *
-     * @param position [deg] with 0 at 3 o'clock
-     * @returns {number}
-     */
-/*
-    function polarTosliderPosition(position) {
-        // "-" for changing CCW to CW
-        if (trace) console.log(`polarTosliderPosition ${position} -> ${(config.zero_at - position + 360.0) % 360.0}`);
-        return (config.zero_at - position + 360.0) % 360.0;    // we add 360 to handle negative values down to -360
-    }
-*/
-
-    /**
      * startDrag() must have been called before to init the targetRect variable.
      */
     function mouseUpdate(e) {
@@ -332,27 +276,12 @@ export default function(elem, conf = {}) {
         // the page is scrolled horizontally. Originally, this property was defined
         // as a long integer. The CSSOM View Module redefined it as a double float.
 
-        let dxPixels = e.clientX - targetRect.left;
+        // let dxPixels = e.clientX - targetRect.left;
         let dyPixels = e.clientY - targetRect.top;
 
-        let dx = dxPixels / targetRect.width * config.width;
+        // let dx = dxPixels / targetRect.width * config.width;
         let dy = getViewboxY(dyPixels / targetRect.height * VIEWBOX_HEIGHT + config.track_offset);
-
-        console.log(`x: ${Math.round(dx)}, y: ${Math.round(dy)}`);
-        // if (config.rotation === CCW) dx = - dx;
-
         position = Math.min(Math.max(dy, 0), config.track_length);
-
-        // convert to polar coordinates
-        // let position_rad = Math.atan2(dy, dx);
-        // if (position_rad < 0) position_rad = 2.0*Math.PI + position_rad;
-        //
-        // if (trace) console.log(`mouseUpdate: position in svg = ${dxPixels}, ${dyPixels} pixels; ${dx.toFixed(3)}, ${dy.toFixed(3)} rel.; position ${position_rad.toFixed(3)} rad`);
-
-        // setPosition(polarTosliderPosition(position_rad * 180.0 / Math.PI), true);
-
-        // distance from arc center to mouse position:
-        // distance = Math.sqrt(dx*(HALF_WIDTH/config.track_width)*dx*(HALF_WIDTH/config.track_width) + dy*(HALF_HEIGHT/config.track_width)*dy*(HALF_HEIGHT/config.track_width));
     }
 
     /**
@@ -388,7 +317,6 @@ export default function(elem, conf = {}) {
 
         // Note: we must take the boundingClientRect of the <svg> and not the <path> because the <path> bounding rect
         //       is not constant because it encloses the current arc.
-
 
         document.addEventListener('mousemove', handleDrag, false);
         document.addEventListener('mouseup', endDrag, false);
@@ -471,7 +399,6 @@ export default function(elem, conf = {}) {
         if (trace) console.log('slider value has changed');
         let value = getValue();     // TODO: cache the value
         let event = new CustomEvent('change', {'detail': value});
-        //svg_element.dispatchEvent(event);
         elem.dispatchEvent(event);
         if (config.onchange) {
             config.onchange(value);
@@ -491,61 +418,8 @@ export default function(elem, conf = {}) {
      * Return viewBox Y coordinate
      */
     function getViewboxY(y) {
-        // console.log(`${y} --> ${Math.min(Math.max(VIEWBOX_HEIGHT - y, 0), VIEWBOX_HEIGHT)}`);
         return Math.min(Math.max(VIEWBOX_HEIGHT - y, 0), VIEWBOX_HEIGHT);
-/*
-        let a = position * Math.PI / 180.0;
-        let r = radius || config.track_width;
-        let x = Math.cos(a) * r;
-        let y = Math.sin(a) * r;
-        return {
-            x: config.rotation === CW ? (HALF_WIDTH + x) : (HALF_WIDTH - x),
-            y: HALF_HEIGHT - y
-        }
-*/
     }
-
-    /**
-     *
-     * @param from_position in [degree] in slider's coordinates
-     * @param to_position in [degree] in slider's coordinates
-     * @param radius
-     */
-    /*
-    function getArc(from_position, to_position, radius) {
-
-        if (trace) console.group(`getArc(${from_position}, ${to_position}, ${radius})`);
-
-        // SVG d: "A rx,ry xAxisRotate LargeArcFlag,SweepFlag x,y".
-        // SweepFlag is either 0 or 1, and determines if the arc should be swept in a clockwise (1), or anti-clockwise (0) direction
-        // ref: https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
-
-        let a0 = sliderToPolarPosition(from_position);
-        let a1 = sliderToPolarPosition(to_position);
-
-        // little trick to force a full arc (360deg) when from=0 and to=360
-        if (from_position !== to_position) {
-            // with this we make sure that x1 will be different than x0 within the path definition
-            a0 -= 0.0001;
-            a1 += 0.0001;
-        }
-
-        let {x: x0, y: y0} = getViewboxCoord(a0, radius);
-        let {x: x1, y: y1} = getViewboxCoord(a1, radius);
-
-        let delta_position = (a0 - a1 + 360.0) % 360.0;
-
-        let large_arc = delta_position < 180.0 ? 0 : 1;
-        let arc_direction = config.rotation === CW ? 1 : 0;
-
-        let p = `M ${x0},${y0} A ${radius},${radius} 0 ${large_arc},${arc_direction} ${x1},${y1}`;
-
-        if (trace) console.groupEnd();
-        if (trace) console.log("arc: " + p);
-
-        return p;
-    }
-    */
 
     /**
      *
@@ -568,7 +442,6 @@ export default function(elem, conf = {}) {
         svg_bg.setAttribute("stroke-width", `${config.bg_border_width}`);
         svg_bg.setAttribute("class", config.class_bg);
         svg_element.appendChild(svg_bg);
-
     }
 
     /**
@@ -578,28 +451,24 @@ export default function(elem, conf = {}) {
 
         if (!config.markers) return;
 
-        // let x0 = (config.width - config.markers_length) / 2;
-        // let x1 = x0 + config.markers_length;
-        let x0 = 0;
-        let x1 = config.width;
+        let x0 = (config.width - config.markers_length) / 2;
+        let x1 = config.markers_length;
 
         let p = '';
         let k = config.markers;
-        // let step = config.track_length / config.markers;
         for (let i = 0; i <= k; i++) {
             let y = getViewboxY(config.track_offset + (config.track_length / k * i));
-            console.log(y);
+            if (trace) console.log(y);
             p += `M ${x0},${y} L ${x1},${y} `;
         }
 
-        svg_divisions = document.createElementNS(NS, "path");
-        svg_divisions.setAttributeNS(null, "d", p);
-        svg_divisions.setAttribute("stroke", `${config.markers_color}`);
-        svg_divisions.setAttribute("stroke-width", `${config.markers_width}`);
-        svg_divisions.setAttribute("stroke-linecap", config.linecap);
-        svg_divisions.setAttribute("class", config.class_markers);
-        svg_element.appendChild(svg_divisions);
-
+        svg_markers = document.createElementNS(NS, "path");
+        svg_markers.setAttributeNS(null, "d", p);
+        svg_markers.setAttribute("stroke", `${config.markers_color}`);
+        svg_markers.setAttribute("stroke-width", `${config.markers_width}`);
+        svg_markers.setAttribute("stroke-linecap", config.linecap);
+        svg_markers.setAttribute("class", config.class_markers);
+        svg_element.appendChild(svg_markers);
     }
 
     /**
@@ -611,8 +480,6 @@ export default function(elem, conf = {}) {
 
         if (!config.track_bg) return;
 
-        console.group('draw_track_background');
-
         svg_track_bg = document.createElementNS(NS, "rect");
         svg_track_bg.setAttributeNS(null, "x", `${(config.width - config.track_bg_width) / 2}`);
         svg_track_bg.setAttributeNS(null, "y", `${getViewboxY(config.track_bg_offset + config.track_bg_length + config.track_bg_radius)}`);
@@ -623,26 +490,9 @@ export default function(elem, conf = {}) {
         svg_track_bg.setAttribute("stroke", `${config.track_color}`);
         svg_track_bg.setAttribute("stroke-width", '0.5');
         svg_track_bg.setAttribute("fill", `${config.track_bg_color}`);
-        // svg_track_bg.setAttribute("stroke-linecap", config.linecap);
         svg_track_bg.setAttribute("class", config.class_track_bg);
         svg_element.appendChild(svg_track_bg);
-
-        console.groupEnd();
-
     }
-
-    /**
-     *
-     * @returns {*}
-     */
-    // function getTrackPath() {
-    //
-    //     let p = null;
-    //
-    //     // p = getArc(0, position, config.track_width);
-    //
-    //     return p;
-    // }
 
     /**
      *
@@ -731,45 +581,20 @@ export default function(elem, conf = {}) {
      *
      */
     function redraw() {
+
         draw_track();
         draw_cursor();
-/*
-        let p = getTrackPath();
-        if (p) {
-            if (svg_track) {
-                svg_track.setAttributeNS(null, "d", p);
-            } else {
-                draw_track();
-            }
-        } else {
-            if (svg_track) {
-                svg_track.setAttributeNS(null, "d", "");    // we hide the track
-            }
-        }
 
         if (!has_changed) {
             has_changed = getValue() !== config.default_value;
-            if (has_changed) {
-                if (svg_track) {
-                    svg_track.setAttribute("stroke", `${config.track_color}`);
-                }
-            }
-        }
-
-        p = getTrackCursor();
-        if (p) {
-            if (svg_cursor) {
-                svg_cursor.setAttributeNS(null, "d", p);
-                if (has_changed) {
-                    svg_cursor.setAttribute("stroke", `${config.cursor_color}`);
-                }
-            }
+            // if (has_changed) {
+            //     if (svg_track) svg_track.setAttribute("stroke", `${config.track_color}`);
+            // }
         }
 
         if (svg_value_text) {
             svg_value_text.textContent = getDisplayValue();
         }
-*/
     }
 
     /**
