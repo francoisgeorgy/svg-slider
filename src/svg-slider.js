@@ -15,7 +15,7 @@ export default function(elem, conf = {}) {
         throw 'You must pass a DOM node reference to the slider constructor';
     }
 
-    let trace = false;    // when true, will log more details in the console; use enableDebug(), disableDebug() to change
+    let trace = true;    // when true, will log more details in the console; use enableDebug(), disableDebug() to change
 
     const NS = "http://www.w3.org/2000/svg";
 
@@ -267,7 +267,8 @@ export default function(elem, conf = {}) {
      * @param increment
      */
     function incPosition(increment) {
-        setPosition(Math.min(Math.max(position + increment, 0), config.track_length), true);
+        // setPosition(Math.min(Math.max(position + increment, 0), config.track_length), true);
+        setPosition(position + increment, true);
     }
 
     /**
@@ -289,7 +290,10 @@ export default function(elem, conf = {}) {
 
         // let dx = dxPixels / targetRect.width * config.width;
         let dy = getViewboxY(dyPixels / targetRect.height * VIEWBOX_HEIGHT + config.track_offset);
-        position = Math.min(Math.max(dy, 0), config.track_length);
+        // position = Math.min(Math.max(dy, 0), config.track_length);
+
+        setPosition(dy, true);
+
     }
 
     /**
@@ -460,13 +464,13 @@ export default function(elem, conf = {}) {
         if (!config.markers) return;
 
         let x0 = (config.width - config.markers_length) / 2;
-        let x1 = config.markers_length;
+        let x1 = x0 + config.markers_length;
 
         let p = '';
         let k = config.markers;
         for (let i = 0; i <= k; i++) {
             let y = getViewboxY(config.track_offset + (config.track_length / k * i));
-            if (trace) console.log(y);
+            if (trace) console.log(`M ${x0},${y} L ${x1},${y} `);
             p += `M ${x0},${y} L ${x1},${y} `;
         }
 

@@ -77,10 +77,13 @@
 
     document.addEventListener("DOMContentLoaded", function() {
 
-        new Slider(document.getElementById('slider-default'), {
-            initial_value: 60
-        });
-        new Slider(document.getElementById('slider-2'), {
+        let sliders = {};
+
+        sliders[1] = new Slider(document.getElementById('slider-default'));
+
+        sliders[1].enableDebug();
+
+        sliders[2] = new Slider(document.getElementById('slider-2'), {
             track_bg_offset: 5,
             track_bg_length: 90,
             track_bg_width: 6,
@@ -95,7 +98,8 @@
             cursor_radius: 2,
             initial_value: 42
         });
-        new Slider(document.getElementById('slider-3'), {
+
+        sliders[3] = new Slider(document.getElementById('slider-3'), {
             markers: false,
             track_bg_offset: 5,
             track_bg_length: 90,
@@ -114,7 +118,7 @@
             initial_value: 42
         });
 
-        new Slider(document.getElementById('slider-dark1'), {
+        sliders[4] = new Slider(document.getElementById('slider-dark1'), {
             palette: 'dark',
             track_bg_offset: 5,
             track_bg_length: 90,
@@ -126,12 +130,50 @@
             track_width: 6,
             track_radius: 3,
             markers_width: 1,
-            cursor_width: 16,
+            cursor_width: 14,
             cursor_height: 6,
             cursor_border_width: 0,
             cursor_radius: 2,
             initial_value: 42
         });
+
+
+        Object.getOwnPropertyNames(sliders).forEach(
+            function(slider, index) {
+                sliders[slider].value = 42;
+            }
+        );
+
+        const value_elem = document.getElementById("value");
+        const all_sliders = document.getElementsByClassName("slider");
+        for (let i = 0; i < all_sliders.length; i++) {
+            all_sliders[i].addEventListener("change", function(event) {
+                // Event.target: a reference to the object that dispatched the event. It is different from event.currentTarget
+                //               when the event handler is called during the bubbling or capturing phase of the event.
+                value_elem.innerText = `#${event.target.id}: ${event.detail}`;
+            });
+        }
+
+        var randomize_button = document.getElementById("randomize");
+        randomize_button.addEventListener("click", function(event) {
+            Object.getOwnPropertyNames(sliders).forEach(
+                function(slider) {
+                    var v = 0;
+                    var m = Math.ceil(Math.random() * 100);
+                    var id = setInterval(frame, 15);
+                    function frame() {
+                        if (v > m) {
+                            clearInterval(id);
+                        } else {
+                            sliders[slider].value = v;
+                            v++;
+                        }
+                    }
+                }
+            );
+        });
+
+
     });
 
 </script>
