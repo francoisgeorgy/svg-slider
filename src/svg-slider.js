@@ -21,7 +21,7 @@ export default function(elem, conf = {}) {
 
     //---------------------------------------------------------------------
     /*
-          +--------------+ VIEWBOX_HEIGHT=99
+          +--------------+ VIEWBOX_HEIGHT=100
           |              |
           |   /------\   |      ^
           |   |      |   |      |
@@ -90,8 +90,7 @@ export default function(elem, conf = {}) {
         track_bg_length: 80,
         track_bg_width: 10,
         track_bg_radius: 5,
-        // track_bg_border_width: 0,
-        // track_bg_border_color: '',
+        track_bg_border_width: 0,
 
         // track:
         track_offset: 10,
@@ -445,7 +444,7 @@ export default function(elem, conf = {}) {
         svg_bg.setAttributeNS(null, "width", `${config.width}`);
         svg_bg.setAttributeNS(null, "height", `${VIEWBOX_HEIGHT}`);
         svg_bg.setAttributeNS(null, "rx", '0');     // Determines the horizontal corner radius of the rect.
-        svg_bg.setAttributeNS(null, "ry", '1');     // Determines the vertical corner radius of the rect.
+        svg_bg.setAttributeNS(null, "ry", '0');     // Determines the vertical corner radius of the rect.
         svg_bg.setAttribute("fill", `${config.bg_color}`);
         svg_bg.setAttribute("stroke", `${config.bg_border_color}`);
         svg_bg.setAttribute("stroke-width", `${config.bg_border_width}`);
@@ -494,10 +493,10 @@ export default function(elem, conf = {}) {
         svg_track_bg.setAttributeNS(null, "y", `${getViewboxY(config.track_bg_offset + config.track_bg_length + config.track_bg_radius)}`);
         svg_track_bg.setAttributeNS(null, "width", `${config.track_bg_width}`);
         svg_track_bg.setAttributeNS(null, "height", `${config.track_bg_length + (2 * config.track_bg_radius)}`);
-        svg_track_bg.setAttributeNS(null, "rx", '5');     // Determines the horizontal corner radius of the rect.
-        svg_track_bg.setAttributeNS(null, "ry", '5');     // Determines the vertical corner radius of the rect.
-        svg_track_bg.setAttribute("stroke", `${config.track_color}`);
-        svg_track_bg.setAttribute("stroke-width", '0.5');
+        svg_track_bg.setAttributeNS(null, "rx", `${config.track_bg_radius}`);
+        svg_track_bg.setAttributeNS(null, "ry", `${config.track_bg_radius}`);
+        svg_track_bg.setAttribute("stroke", `${config.track_bg_border_color}`);
+        svg_track_bg.setAttribute("stroke-width", `${config.track_bg_border_width}`);
         svg_track_bg.setAttribute("fill", `${config.track_bg_color}`);
         svg_track_bg.setAttribute("class", config.class_track_bg);
         svg_element.appendChild(svg_track_bg);
@@ -513,8 +512,8 @@ export default function(elem, conf = {}) {
             svg_track = document.createElementNS(NS, "rect");
             svg_track.setAttributeNS(null, "x", `${(config.width - config.track_width) / 2}`);
             svg_track.setAttributeNS(null, "width", `${config.track_width}`);
-            svg_track.setAttributeNS(null, "rx", '5');     // Determines the horizontal corner radius of the rect.
-            svg_track.setAttributeNS(null, "ry", '5');     // Determines the vertical corner radius of the rect.
+            svg_track.setAttributeNS(null, "rx", `${config.track_radius}`);
+            svg_track.setAttributeNS(null, "ry", `${config.track_radius}`);
             // svg_track.setAttribute("stroke", `${config.track_color_init}`);
             svg_track.setAttribute("stroke-width", '0');
             svg_track.setAttribute("fill", `${config.track_color}`);

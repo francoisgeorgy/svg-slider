@@ -16,7 +16,7 @@
             background-color: #ffffff;
         }
         #dark-bg {
-            background-color: #000000;
+            background-color: #373738;
         }
         .grid {
             padding: 20px;
@@ -32,9 +32,10 @@
         .slider {
             align-self: start;
             border: none;
+            height: 20vh;
         }
         #slider-default {
-            height: 80vh;
+            height: 20vh;
         }
         #slider-2 {
             height: 200px;
@@ -60,6 +61,12 @@
         </div>
         <div>
             <svg class="slider" id="slider-3"></svg>
+            <div></div>
+        </div>
+    </div>
+    <div id="dark-bg" class="grid">
+        <div>
+            <svg class="slider" id="slider-dark1"></svg>
             <div></div>
         </div>
     </div>
@@ -107,6 +114,24 @@
             initial_value: 42
         });
 
+        new Slider(document.getElementById('slider-dark1'), {
+            palette: 'dark',
+            track_bg_offset: 5,
+            track_bg_length: 90,
+            track_bg_width: 8,
+            track_bg_radius: 3,
+            track_bg_border_width: 2,
+            track_offset: 5,
+            track_length: 90,
+            track_width: 6,
+            track_radius: 3,
+            markers_width: 1,
+            cursor_width: 16,
+            cursor_height: 6,
+            cursor_border_width: 0,
+            cursor_radius: 2,
+            initial_value: 42
+        });
     });
 
 </script>
