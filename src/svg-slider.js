@@ -226,7 +226,8 @@ export default function(elem, conf = {}) {
      * @returns {number}
      */
     function getValue(a) {
-        let v = ((a || position) / config.track_length) * (config.value_max - config.value_min) + config.value_min;
+        let p = a === undefined ? position : a;
+        let v = (p / config.track_length) * (config.value_max - config.value_min) + config.value_min;
         return getRoundedValue(v);
     }
 
@@ -594,6 +595,8 @@ export default function(elem, conf = {}) {
      */
     function redraw() {
 
+        if (trace) console.log('redraw');
+
         draw_track();
         draw_cursor();
 
@@ -624,6 +627,7 @@ export default function(elem, conf = {}) {
         },
         enableDebug: function() {
             trace = true;
+            console.log('debug enabled');
         },
         disableDebug: function() {
             trace = false;
