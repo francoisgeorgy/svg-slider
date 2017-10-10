@@ -3,7 +3,7 @@
 //TODO: make _init attributes optional
 
 export default {
-    lightgray : {
+    light: {
         bg_color: '#E0E0E0',
         bg_border_color: '#BDBDBD',
         track_bg_color: '#D0D0D0',
@@ -15,7 +15,7 @@ export default {
         markers_color: '#AAAAAA',
         font_color: '#424242',
     },
-    light : {
+    light2: {
         bg_color: '#B1DAEE',
         bg_border_color: '#569DC0',
         track_bg_color: '#B1DAEE',
@@ -28,21 +28,10 @@ export default {
         font_color: '#1D6D93',
     },
     dark: {
-        // bg_color: '#000000',
-        // bg_border_color: '#569DC0',
-        // track_bg_color: '#424242',
-        // track_color_init: '#FDD835',
-        // track_color: '#FFEC00',
-        // cursor_color_init: '#569DC0',
-        // cursor_color: '#FDD835',
-        // markers_color: '#3680A4',
-        // font_color: '#FFEA00',
-
         bg: false,
         track_bg: true,
         track: true,
         cursor: true,
-
         bg_color: '#333',
         bg_border_color: '#888',
         track_bg_color: '#555',
@@ -53,6 +42,5 @@ export default {
         cursor_color: '#d3d347',
         markers_color: '#999',
         font_color: '#FFEA00',
-
     }
 }

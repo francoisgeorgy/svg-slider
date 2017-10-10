@@ -50,17 +50,12 @@ export default function(elem, conf = {}) {
      */
 
     const VIEWBOX_HEIGHT = 100;
-    // const VIEWBOX_WIDTH = 20;
 
     let svg_element;
 
-    /*
-    if (typeof elem === "string") {
-        element = document.querySelector(elem);
-    } else if (elem instanceof HTMLElement) {
-        element = elem;
+    if (typeof elem === 'string' || elem instanceof String) {
+        elem = document.querySelector(elem);
     }
-    */
 
     if (elem.nodeName.toLowerCase() === 'svg') {
         svg_element = elem;
@@ -70,7 +65,6 @@ export default function(elem, conf = {}) {
     }
 
     let defaults = {
-
         // User configurable properties. The colors are defined in the 'palettes', later on.
         // No camelCase because we want to be able to have the same name in data- attributes.
 
@@ -112,15 +106,15 @@ export default function(elem, conf = {}) {
         value_resolution: 1,        // null means ignore
 
         // appearance:
-        palette: 'lightgray',
+        palette: 'light',
         bg: false,
         track_bg: true,
         track: true,
         cursor: true,
         // CSS class names
-        linecap: 'butt',                   // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap
+        linecap: 'butt',                    // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap
         value_text: true,
-        // value_position: HALF_HEIGHT + 8,    // empirical value: HALF_HEIGHT + config.font_size / 3
+        // value_position: HALF_HEIGHT + 8, // empirical value: HALF_HEIGHT + config.font_size / 3
         // value_formatting: null,          // TODO; callback function
         format: v => v,                     // formatting of the displayed value
     
@@ -135,12 +129,13 @@ export default function(elem, conf = {}) {
         class_cursor : 'slider-cursor',
         class_markers: 'slider-markers',
 
-        snap_to_steps: false,       // TODO
+        snap_to_steps: false,               // TODO
 
         // mouse wheel support:
         mouse_wheel_acceleration: 1,
 
-        onchange: null              // callback function
+        // callback function
+        onchange: null                      // provides an alternative to the 'change' event
     };
 
     //---------------------------------------------------------------------

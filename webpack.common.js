@@ -5,7 +5,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'svg-slider.min.js',
-        library: 'svg-slider',
+        library: 'svgSlider',
         libraryTarget: 'umd'
     }
 };

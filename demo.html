@@ -1,22 +1,21 @@
 <!doctype html>
 <html>
 <head>
+    <script src="dist/svg-slider.min.js"></script>
     <style>
         body {
-            padding: 0;
-            margin: 0;
             font-family: sans-serif;
         }
         #header {
-            padding: 5px;
-            background-color: #ccc;
+            padding-bottom: 6px;
             border-bottom: 1px solid #aaa;
+            line-height: 150%;
         }
         #light-bg {
             background-color: #ffffff;
         }
         #dark-bg {
-            background-color: #373738;
+            background-color: #000000;
         }
         .grid {
             padding: 20px;
@@ -46,9 +45,11 @@
     </style>
 </head>
 <body>
+    <h1>svg-slider demo</h1>
     <div id="header">
-        <button id="randomize">randomize</button>
-        <span id="value" style="margin-left:2em"></span>
+        Click over the slider and drag to change it's value. You can also use the mouse-wheel.<br />
+        Click this <button id="randomize">randomize</button> button to randomly set the value of all sliders.
+        <span id="value" style="float:right;"></span>
     </div>
     <div id="light-bg" class="grid">
         <div>
@@ -67,9 +68,13 @@
         </div>
     </div>
 </body>
-<script type="module">
+<script>
 
-    import Slider from './svg-slider.js';
+    // If the browser support ES6 modules:
+    //import Slider from './svg-slider.js';
+
+    // For browser that do not support ES6 modules yet:
+    let Slider = svgSlider.default;
 
     document.addEventListener("DOMContentLoaded", function() {
 
@@ -93,6 +98,7 @@
 
         sliders[4] = new Slider(document.getElementById('slider-dark1'), {
             palette: 'dark',
+            track_bg_border_color: '#000',  // set identical to background
             track_bg_offset: 5,
             track_bg_length: 90,
             track_bg_width: 8,
@@ -144,7 +150,6 @@
                 }
             );
         });
-
 
     });
 
