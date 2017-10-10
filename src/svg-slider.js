@@ -207,7 +207,7 @@ export default function(elem, conf = {}) {
 
     /**
      *
-     * @param a slider's position [0..track_length]
+     * @param position slider's position [0..track_length]
      * @returns {*}
      */
     function getDisplayValue(position) {
@@ -245,6 +245,7 @@ export default function(elem, conf = {}) {
     /**
      * Set slider's position
      * @param new_position
+     * @param fire_event
      */
     function setPosition(new_position, fire_event) {
         let prev = position;
