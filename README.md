@@ -163,6 +163,8 @@ Check the `demo.html` file for examples.
 
 - horizontal, vertical
 - log scale
+    - https://www.kvraudio.com/forum/viewtopic.php?t=348751
+    - http://education.lenardaudio.com/en/09_mix_3.html
 - predefined positions
 - contextual menu
 
