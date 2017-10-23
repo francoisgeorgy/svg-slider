@@ -161,12 +161,15 @@ Check the `demo.html` file for examples.
 
 ## TODO
 
-- horizontal, vertical
+- horizontal, vertical, free angle
+- snap to zero
 - log scale
     - https://www.kvraudio.com/forum/viewtopic.php?t=348751
     - http://education.lenardaudio.com/en/09_mix_3.html
-- predefined positions
+- steps (predefined positions)
+- display value along cursor
 - contextual menu
+- keyboard support
 
 
 ## License
