@@ -7,5 +7,12 @@ module.exports = {
         filename: 'svg-slider.min.js',
         library: 'svgSlider',
         libraryTarget: 'umd'
+    },
+    module: {
+        loaders: [{
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: "babel-loader"
+        }]
     }
 };

@@ -2,15 +2,6 @@
 
 A flexible and customizable slider for your web applications.
 
-## Supported browsers
-
-The code uses ES6 features. It is not 'babelified'. More than 97% of the _global browser share_ support the ES6 features used
-in the code (checked with <http://jscc.info/>). 
-
-The code should work with these versions:
-
-- Chrome 49+, Firefox 44+, Opera 36+, Safari 10+, Edge 12+, IE 11+
-
 ## Usage
 
 Check the `demo.html` file for examples.
@@ -46,7 +37,108 @@ Check the `demo.html` file for examples.
         let [slider_id, slider_value] = [event.target.id, event.detail];
     });    
 
-## Options
+## Usage with React
+
+
+Quick example for a svg-knob and a linked div displaying the value transmitted through the knob's onChange event.
+
+### Simple `SliderContainer` component (2 files):
+
+`components/SliderContainer/index.jsx` :
+
+    import React, { Component } from 'react';
+    import SliderComponent from "./SliderComponent";
+    
+    function Value(props) {
+        return <div className="value">{props.value}</div>;
+    }
+    
+    class SliderContainer extends Component {
+    
+        state = { value: 0 };
+    
+        handleChange = e => this.setState({value: e.detail});
+    
+        render() {
+            return (
+                <div className="slider">
+                    <SliderComponent onChange={this.handleChange} />
+                    <Value value={this.state.value} />
+                </div>
+            );
+        }
+    }
+    
+    export default SliderContainer
+
+`components/SliderContainer/SliderComponent.jsx` :
+
+    import React, { Component } from 'react';
+    import PropTypes from 'prop-types';
+    import SvgSlider from 'svg-slider';
+    
+    class SliderComponent extends Component {
+    
+        handleChange = e => {
+            if (this.props.onChange) this.props.onChange(e);
+        };
+    
+        componentDidMount() {
+            this.k = new SvgSlider(this.dom);
+            this.dom.addEventListener("change", this.handleChange);
+        }
+    
+        // Not really necessary, but will slightly improve the rendering performance.
+        shouldComponentUpdate() {
+            return this.k === null;
+        }
+    
+        render() {
+            return (
+                <svg ref={elem => this.dom = elem} />
+            );
+        }
+    }
+    
+    // https://reactjs.org/docs/typechecking-with-proptypes.html
+    SliderComponent.propTypes = {
+        onChange: PropTypes.func
+    };
+    
+    export default SliderComponent;
+
+### React App:
+
+`App.js` :
+
+    import React, {Component} from 'react';
+    import './App.css';
+    import SliderContainer from "./components/SliderContainer/index";
+
+    class App extends Component {
+        render() {
+            return (
+                <div>
+                    <SliderContainer />
+                </div>
+            );
+        }
+    }
+
+    export default App;
+
+`App.css`:
+    
+    .slider {
+        width: 40px;
+    }
+    
+    .slider .value {
+        text-align: center;
+    }
+
+
+# Options
 
     let defaults = {
         // User configurable properties. The colors are defined in the 'palettes', later on.
@@ -165,6 +257,32 @@ Check the `demo.html` file for examples.
 - log scale
 - predefined positions
 - contextual menu
+
+
+# MISC
+
+Add ES5 support: 
+
+    yarn add --dev babel-loader babel-core
+    yarn add --dev babel-preset-es2015
+    
+create `.babelrc` with:
+    
+    {
+        "presets": ["es2015"]
+    }
+
+add in webpack config:
+
+    module: {
+        loaders: [{
+            test: /\.js$/,
+            exclude: /node_modules/,
+            loader: "babel-loader"
+        }]
+    }
+
+
 
 
 ## License
