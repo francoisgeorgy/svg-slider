@@ -253,10 +253,15 @@ Quick example for a svg-knob and a linked div displaying the value transmitted t
 
 ## TODO
 
-- horizontal, vertical
+- horizontal, vertical, free angle
+- snap to zero
 - log scale
-- predefined positions
+    - https://www.kvraudio.com/forum/viewtopic.php?t=348751
+    - http://education.lenardaudio.com/en/09_mix_3.html
+- steps (predefined positions)
+- display value along cursor
 - contextual menu
+- keyboard support
 
 
 # MISC
