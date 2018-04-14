@@ -23,7 +23,7 @@ Check the `demo.html` file for examples.
 #### With ES6 module support:
 
     <script type="module">
-        import Slider from './svg-slider.js';
+        import Slider from './index.js';
         const s = new Slider('#slider', { /* config... */ });        
     </script>
 
