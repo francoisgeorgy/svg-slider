@@ -3,6 +3,8 @@
 
 import palettes from './palettes.js';
 
+// FIXME: remove console usage for IE compatibility
+
 /**
  *
  * @param elem DIV or SVN element
@@ -12,7 +14,7 @@ import palettes from './palettes.js';
 export default function(elem, conf = {}) {
 
     if (!elem) {
-        throw 'You must pass a DOM node reference to the slider constructor';
+        throw "You must pass a DOM node reference to the slider constructor";
     }
 
     let trace = false;    // when true, will log more details in the console; use enableDebug(), disableDebug() to change
@@ -53,11 +55,11 @@ export default function(elem, conf = {}) {
 
     let svg_element;
 
-    if (typeof elem === 'string' || elem instanceof String) {
+    if (typeof elem === "string" || elem instanceof String) {
         elem = document.querySelector(elem);
     }
 
-    if (elem.nodeName.toLowerCase() === 'svg') {
+    if (elem.nodeName.toLowerCase() === "svg") {
         svg_element = elem;
     } else {
         svg_element = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -106,28 +108,28 @@ export default function(elem, conf = {}) {
         value_resolution: 1,        // null means ignore
 
         // appearance:
-        palette: 'light',
+        palette: "light",
         bg: false,
         track_bg: true,
         track: true,
         cursor: true,
         // CSS class names
-        linecap: 'butt',                    // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap
+        linecap: "butt",                    // https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/stroke-linecap
         value_text: true,
         // value_position: HALF_HEIGHT + 8, // empirical value: HALF_HEIGHT + config.font_size / 3
         // value_formatting: null,          // TODO; callback function
         format: v => v,                     // formatting of the displayed value
-    
-        font_family: 'sans-serif',
-        font_size: 25,
-        font_weight: 'bold',
 
-        class_bg: 'slider-bg',
-        class_track_bg : 'slider-track-bg',
-        class_track : 'slider-track',
-        class_value : 'slider-value',
-        class_cursor : 'slider-cursor',
-        class_markers: 'slider-markers',
+        font_family: "sans-serif",
+        font_size: 25,
+        font_weight: "bold",
+
+        class_bg: "slider-bg",
+        class_track_bg : "slider-track-bg",
+        class_track : "slider-track",
+        class_value : "slider-value",
+        class_cursor : "slider-cursor",
+        class_markers: "slider-markers",
 
         snap_to_steps: false,               // TODO
 
@@ -141,7 +143,7 @@ export default function(elem, conf = {}) {
     //---------------------------------------------------------------------
     // Consolidate all configs:
 
-    let data_config = JSON.parse(elem.dataset.config || '{}');
+    let data_config = JSON.parse(elem.dataset.config || "{}");
     let c = Object.assign({}, defaults, palettes[defaults.palette], conf, data_config);
     // we re-assign conf and data_config for the case they override some of the palette colors.
     let config = Object.assign(c, palettes[c.palette], conf, data_config);
@@ -299,7 +301,7 @@ export default function(elem, conf = {}) {
      */
     function startDrag(e) {
 
-        if (trace) console.log('startDrag');
+        if (trace) console.log("startDrag");
 
         e.preventDefault();
 
@@ -327,8 +329,8 @@ export default function(elem, conf = {}) {
         // Note: we must take the boundingClientRect of the <svg> and not the <path> because the <path> bounding rect
         //       is not constant because it encloses the current arc.
 
-        document.addEventListener('mousemove', handleDrag, false);
-        document.addEventListener('mouseup', endDrag, false);
+        document.addEventListener("mousemove", handleDrag, false);
+        document.addEventListener("mouseup", endDrag, false);
 
         mouseUpdate(e);
         redraw();
@@ -348,9 +350,9 @@ export default function(elem, conf = {}) {
      *
      */
     function endDrag() {
-        if (trace) console.log('endDrag');
-        document.removeEventListener('mousemove', handleDrag, false);
-        document.removeEventListener('mouseup', endDrag, false);
+        if (trace) console.log("endDrag");
+        document.removeEventListener("mousemove", handleDrag, false);
+        document.removeEventListener("mouseup", endDrag, false);
     }
 
     /**
@@ -395,14 +397,14 @@ export default function(elem, conf = {}) {
      */
     function startTouch(e) {
 
-        if (trace) console.log('startTouch');
+        if (trace) console.log("startTouch");
 
         e.preventDefault(); // necessary to avoid moving all the page
 
         targetRect = svg_element.getBoundingClientRect();
 
-        document.addEventListener('touchmove', handleTouch, {passive: false});
-        document.addEventListener('touchend', endTouch);
+        document.addEventListener("touchmove", handleTouch, {passive: false});
+        document.addEventListener("touchend", endTouch);
 
     }
 
@@ -412,7 +414,7 @@ export default function(elem, conf = {}) {
      */
     function handleTouch(e) {
 
-        if (trace) console.log('handleTouch', e.touches);
+        if (trace) console.log("handleTouch", e.touches);
 
         e.preventDefault();
 
@@ -432,9 +434,9 @@ export default function(elem, conf = {}) {
      *
      */
     function endTouch() {
-        if (trace) console.log('endTouch');
-        document.removeEventListener('touchmove', handleTouch);
-        document.removeEventListener('touchend', endTouch);
+        if (trace) console.log("endTouch");
+        document.removeEventListener("touchmove", handleTouch);
+        document.removeEventListener("touchend", endTouch);
     }
 
     /**
@@ -454,9 +456,9 @@ export default function(elem, conf = {}) {
      *
      */
     function notifyChange() {
-        if (trace) console.log('slider value has changed');
+        if (trace) console.log("slider value has changed");
         let value = getValue();     // TODO: cache the value
-        let event = new CustomEvent('change', {'detail': value});
+        let event = new CustomEvent("change", {"detail": value});
         elem.dispatchEvent(event);
         if (config.onchange) {
             config.onchange(value);
@@ -469,7 +471,7 @@ export default function(elem, conf = {}) {
      * @private
      */
     function _isMacOS() {
-        return ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'].indexOf(window.navigator.platform) !== -1;
+        return ["Macintosh", "MacIntel", "MacPPC", "Mac68K"].indexOf(window.navigator.platform) !== -1;
     }
 
     /**
@@ -489,12 +491,12 @@ export default function(elem, conf = {}) {
         // For the use of null argument with setAttributeNS, see https://developer.mozilla.org/en-US/docs/Web/SVG/Namespaces_Crash_Course#Scripting_in_namespaced_XML
 
         svg_bg = document.createElementNS(NS, "rect");
-        svg_bg.setAttributeNS(null, "x", '0');
-        svg_bg.setAttributeNS(null, "y", '0');
+        svg_bg.setAttributeNS(null, "x", "0");
+        svg_bg.setAttributeNS(null, "y", "0");
         svg_bg.setAttributeNS(null, "width", `${config.width}`);
         svg_bg.setAttributeNS(null, "height", `${VIEWBOX_HEIGHT}`);
-        svg_bg.setAttributeNS(null, "rx", '0');     // Determines the horizontal corner radius of the rect.
-        svg_bg.setAttributeNS(null, "ry", '0');     // Determines the vertical corner radius of the rect.
+        svg_bg.setAttributeNS(null, "rx", "0");     // Determines the horizontal corner radius of the rect.
+        svg_bg.setAttributeNS(null, "ry", "0");     // Determines the vertical corner radius of the rect.
         svg_bg.setAttribute("fill", `${config.bg_color}`);
         svg_bg.setAttribute("stroke", `${config.bg_border_color}`);
         svg_bg.setAttribute("stroke-width", `${config.bg_border_width}`);
@@ -512,7 +514,7 @@ export default function(elem, conf = {}) {
         let x0 = (config.width - config.markers_length) / 2;
         let x1 = x0 + config.markers_length;
 
-        let p = '';
+        let p = "";
         let k = config.markers;
         for (let i = 0; i <= k; i++) {
             let y = getViewboxY(config.track_offset + (config.track_length / k * i));
@@ -565,7 +567,7 @@ export default function(elem, conf = {}) {
             svg_track.setAttributeNS(null, "rx", `${config.track_radius}`);
             svg_track.setAttributeNS(null, "ry", `${config.track_radius}`);
             // svg_track.setAttribute("stroke", `${config.track_color_init}`);
-            svg_track.setAttribute("stroke-width", '0');
+            svg_track.setAttribute("stroke-width", "0");
             svg_track.setAttribute("fill", `${config.track_color}`);
             // svg_track.setAttribute("stroke-linecap", config.linecap);
             svg_track.setAttribute("class", config.class_track);
@@ -590,7 +592,7 @@ export default function(elem, conf = {}) {
             svg_cursor.setAttributeNS(null, "rx", `${config.cursor_radius}`);     // Determines the horizontal corner radius of the rect.
             svg_cursor.setAttributeNS(null, "ry", `${config.cursor_radius}`);     // Determines the vertical corner radius of the rect.
             // svg_cursor.setAttribute("stroke", `${config.track_bg_color}`);
-            svg_cursor.setAttribute("stroke-width", '0');
+            svg_cursor.setAttribute("stroke-width", "0");
             svg_cursor.setAttribute("fill", `${config.cursor_color}`);
             // svg_cursor.setAttribute("stroke-linecap", config.linecap);
             svg_cursor.setAttribute("class", config.class_cursor);
@@ -640,7 +642,7 @@ export default function(elem, conf = {}) {
      */
     function redraw() {
 
-        if (trace) console.log('redraw');
+        if (trace) console.log("redraw");
 
         draw_track();
         draw_cursor();
@@ -672,7 +674,7 @@ export default function(elem, conf = {}) {
         },
         enableDebug: function() {
             trace = true;
-            console.log('debug enabled');
+            console.log("debug enabled");
         },
         disableDebug: function() {
             trace = false;

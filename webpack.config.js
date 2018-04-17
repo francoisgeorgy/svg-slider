@@ -1,7 +1,7 @@
 module.exports = {
     output: {
         library: "svgSlider",
-        libraryTarget: 'umd'
+        libraryTarget: "umd"
     },
     module: {
         rules: [
