@@ -1,6 +1,6 @@
 module.exports = {
     output: {
-        library: 'svgSlider',
+        library: "svgSlider",
         libraryTarget: 'umd'
     },
     module: {
