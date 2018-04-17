@@ -391,6 +391,54 @@ export default function(elem, conf = {}) {
 
     /**
      *
+     * @param e
+     */
+    function startTouch(e) {
+
+        if (trace) console.log('startTouch');
+
+        e.preventDefault(); // necessary to avoid moving all the page
+
+        targetRect = svg_element.getBoundingClientRect();
+
+        document.addEventListener('touchmove', handleTouch, {passive: false});
+        document.addEventListener('touchend', endTouch);
+
+    }
+
+    /**
+     *
+     * @param e
+     */
+    function handleTouch(e) {
+
+        if (trace) console.log('handleTouch', e.touches);
+
+        e.preventDefault();
+
+        let touchesIndex = e.touches.length - 1;
+
+        let dyPixels = e.touches[touchesIndex].clientY - targetRect.top;
+
+        // let dx = dxPixels / targetRect.width * config.width;
+        let dy = getViewboxY(dyPixels / targetRect.height * VIEWBOX_HEIGHT + config.track_offset);
+        // position = Math.min(Math.max(dy, 0), config.track_length);
+
+        setPosition(dy, true);
+        redraw();
+    }
+
+    /**
+     *
+     */
+    function endTouch() {
+        if (trace) console.log('endTouch');
+        document.removeEventListener('touchmove', handleTouch);
+        document.removeEventListener('touchend', endTouch);
+    }
+
+    /**
+     *
      */
     function attachEventHandlers() {
         svg_element.addEventListener("mousedown", function(e) {
@@ -399,6 +447,7 @@ export default function(elem, conf = {}) {
         svg_element.addEventListener("wheel", function(e) {
             mouseWheelHandler(e);
         });
+        svg_element.addEventListener("touchstart", startTouch, {passive: false});
     }
 
     /**
