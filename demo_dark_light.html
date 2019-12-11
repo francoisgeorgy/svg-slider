@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>svg-slider demo</title>
+    <meta name="description" content="svg-slider demos and examples">
+    <script src="dist/main.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        .light {
+            background-color: #e6fffa;
+        }
+        .dark {
+            background-color: #1a202c;
+            color: #aaa;
+        }
+        .cols {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-content: stretch;
+            width: 100%;
+        }
+        .container {
+            padding: 100px 50px;
+        }
+        .cols div:first-child {
+            text-align: right;
+        }
+        .slider {
+            align-self: start;
+            width: 100px;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>svg-slider demo</h1>
+    <div class="cols">
+        <div class="container dark">
+                <svg class="slider" id="slider-dark"></svg>
+        </div>
+        <div class="container light">
+                <svg class="slider" id="slider-light"></svg>
+        </div>
+    </div>
+</body>
+<script>
+
+    // If the browser support ES6 modules:
+    //import Slider from './index.js';
+
+    // For browser that do not support ES6 modules yet:
+    let Slider = svgSlider.default;
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const k1 = new Slider(document.getElementById('slider-dark'), {
+            palette: 'dark',
+            track_bg_border_color: '#000',  // set identical to background
+            track_bg_offset: 5,
+            track_bg_length: 90,
+            track_bg_width: 8,
+            track_bg_radius: 3,
+            track_bg_border_width: 2,
+            track_offset: 5,
+            track_length: 90,
+            track_width: 6,
+            track_radius: 3,
+            markers_width: 1,
+            cursor_width: 14,
+            cursor_height: 6,
+            cursor_border_width: 0,
+            cursor_radius: 2
+        });
+        k1.value = 42;
+
+        const k2 = new Slider(document.getElementById('slider-light'), {
+            markers: false,
+            cursor: false,
+            track_bg_offset: 5,
+            track_bg_length: 90,
+            track_bg_width: 20,
+            track_bg_radius: 0,
+            track_bg_border_width: 0,
+            track_offset: 5,
+            track_length: 90,
+            track_width: 20,
+            track_radius: 0
+        });
+        k2.value = 70;
+
+    });
+
+</script>
+</html>
