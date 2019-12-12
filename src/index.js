@@ -1,6 +1,4 @@
 
-"use strict";
-
 import palettes from "./palettes.js";
 
 // FIXME: remove console usage for IE compatibility

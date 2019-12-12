@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>svg-slider demo</title>
     <meta name="description" content="svg-slider demos and examples">
-    <script src="dist/main.js"></script>
+    <script src="dist/index.umd.js"></script>
     <style>
         body {
             font-family: sans-serif;
@@ -30,7 +30,7 @@
         }
         .slider {
             align-self: start;
-            width: 100px;
+            height: 20vh;
             border: none;
         }
     </style>
@@ -48,15 +48,9 @@
 </body>
 <script>
 
-    // If the browser support ES6 modules:
-    //import Slider from './index.js';
-
-    // For browser that do not support ES6 modules yet:
-    let Slider = svgSlider.default;
-
     document.addEventListener("DOMContentLoaded", function() {
 
-        const k1 = new Slider(document.getElementById('slider-dark'), {
+        const k1 = new svgSlider(document.getElementById('slider-dark'), {
             palette: 'dark',
             track_bg_border_color: '#000',  // set identical to background
             track_bg_offset: 5,
@@ -76,7 +70,7 @@
         });
         k1.value = 42;
 
-        const k2 = new Slider(document.getElementById('slider-light'), {
+        const k2 = new svgSlider(document.getElementById('slider-light'), {
             markers: false,
             cursor: false,
             track_bg_offset: 5,

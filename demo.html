@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>svg-slider demo</title>
     <meta name="description" content="svg-slider demos and examples">
-    <script src="dist/main.js"></script>
+    <script src="dist/index.umd.js"></script>
     <style>
         body {
             font-family: sans-serif;
@@ -73,11 +73,7 @@
 </body>
 <script>
 
-    // If the browser support ES6 modules:
-    //import Slider from './index.js';
-
-    // For browser that do not support ES6 modules yet:
-    let Slider = svgSlider.default;
+    const Slider = svgSlider;
 
     document.addEventListener("DOMContentLoaded", function() {
 
