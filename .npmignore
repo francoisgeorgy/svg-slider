@@ -1,4 +1,8 @@
 README.0.md
+
+demo.html
+demo_dark_light.html
+
 src/*
 .gitignore
 webpack.*

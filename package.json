@@ -10,10 +10,6 @@
   "bugs": "https://github.com/francoisgeorgy/svg-slider/issues",
   "author": "François Georgy <francois.georgy@gmail.com> (http://sysex.io)",
   "license": "MIT",
-  "files": [
-    "README.md",
-    "dist/main.js"
-  ],
   "source": "src/index.js",
   "main": "dist/index.js",
   "umd:main": "dist/index.umd.js",
