@@ -8,7 +8,7 @@
   ],
   "repository": "https://github.com/francoisgeorgy/svg-slider.git",
   "bugs": "https://github.com/francoisgeorgy/svg-slider/issues",
-  "author": "François Georgy <francois.georgy@gmail.com> (http://sysex.io)",
+  "author": "François Georgy <francois.georgy@gmail.com> (http://studiocode.dev)",
   "license": "MIT",
   "source": "src/index.js",
   "main": "dist/index.js",
